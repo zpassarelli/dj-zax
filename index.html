@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>DJ-ZAX</title>
+  <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/phaser.min.js"></script>
+</head>
+<body>
+  <h1>DJ-<span style="color:cyan">Z</span>AX</h1>
+  <div class="fullscreen-bg">
+    <video loop muted autoplay poster="media/exhaust.png" class="fullscreen-bg__video">
+        <source src="media/beeple-crap-exhaust.mp4" type="video/mp4">
+    </video>
+  </div>
+  <form enctype="multipart/form-data" method="post">
+    <div>
+      <input type="file" id="song" name="song">
+    </div>
+    <div>
+      <button type="submit" id="play">GO</button>
+    </div>
+  </form>
+
+  <canvas id="grid" width="400" height="500"></canvas>
+
+
+
+  <footer>
+    <small>By ZP | 2017 | Background graphic by <a href="http://beeple-crap.com">beeple-crap</a></small>
+  </footer>
+
+  <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+  <script type="text/javascript" src="js/script.js"></script>
+</body>
+</html>

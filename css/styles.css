@@ -2,7 +2,11 @@
   font-family: 'Share Tech Mono',monospace;
   text-align: center;
   color: white;
-  margin-bottom: 0px;
+  margin: 0px;
+}
+
+body{
+  background-color: black;
 }
 
 #play {
@@ -14,10 +18,28 @@
   border: 1px solid white;
 }
 
+canvas {
+  z-index: -3;
+  position: absolute;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%);
+}
+
 #grid {
   display: none;
   background-color: rgba(0, 0, 0, 0.5);
   border: 1px solid white;
+}
+
+#grid2 {
+  z-index: -2;
+  border: 1px hidden;
+}
+
+#grid3 {
+  z-index: -1;
+  border: 1px hidden;
 }
 
 #pause {
@@ -29,13 +51,11 @@
   margin: 5px;
 }
 
-ul {
-  list-style: none;
-}
-
 footer {
   position: fixed;
   top: 95%;
+  left: 50%;
+  transform: translate(-50%);
 }
 
 .fullscreen-bg {

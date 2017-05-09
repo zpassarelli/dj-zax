@@ -7,22 +7,26 @@
   <title>DJ-ZAX</title>
   <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="css/materialize.min.js">
+  <link rel="stylesheet" href="css/materialize.min.css">
   <link rel="stylesheet" href="css/styles.css">
-  <script src="js/phaser.min.js"></script>
+  <!-- <script src="js/phaser.min.js"></script> -->
 </head>
 <body>
-  <h1>DJ-<span style="color:cyan">Z</span>AX</h1>
-  <div class="fullscreen-bg">
+  <h5>DJ-<span style="color:cyan">Z</span>AX</h5>
+  <!-- <div class="fullscreen-bg">
     <video loop muted autoplay poster="media/exhaust.png" class="fullscreen-bg__video">
         <source src="media/beeple-crap-exhaust.mp4" type="video/mp4">
     </video>
+  </div> -->
+
+  <div><i id="pause" class="material-icons" style="font-size: 40px">play_arrow</i></div>
+  <div style="position: relative;">
+    <canvas id="grid" width="400" height="500"></canvas>
+    <canvas id="grid2" width="400" height="500"></canvas>
+    <canvas id="grid3" width="400" height="500"></canvas>
   </div>
 
-  <div><i id="pause" class="material-icons" style="font-size: 50px">play_arrow</i></div>
-  <canvas id="grid" width="400" height="500"></canvas>
-
-  <h2 class="info">How to Play</h2>
+  <h5 class="info">How to Play</h5>
   <div class="info">
     <p>Select an mp3 and press GO.</p>
     <p>Use your A, S, D, F keys.</p>
@@ -52,6 +56,7 @@
   src="https://code.jquery.com/jquery-3.2.1.min.js"
   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
   crossorigin="anonymous"></script>
+  <script type="text/javascript" src="js/materialize.min.js"></script>
   <script type="text/javascript" src="js/script.js"></script>
 </body>
 </html>

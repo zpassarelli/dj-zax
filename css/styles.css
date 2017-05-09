@@ -2,6 +2,7 @@
   font-family: 'Share Tech Mono',monospace;
   text-align: center;
   color: white;
+  margin-bottom: 0px;
 }
 
 #play {
@@ -17,6 +18,24 @@
   display: none;
   background-color: rgba(0, 0, 0, 0.5);
   border: 1px solid white;
+}
+
+#pause {
+  display: none;
+}
+
+.info {
+  background-color: rgba(0,0,0,0.75);
+  margin: 5px;
+}
+
+ul {
+  list-style: none;
+}
+
+footer {
+  position: fixed;
+  top: 95%;
 }
 
 .fullscreen-bg {

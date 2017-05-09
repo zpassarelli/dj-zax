@@ -3,10 +3,12 @@ $(document).ready(function(){
   var canvasReady = false;
 
   function createGrid(){
-    $('#play').css('display','none');
-    $('#song').css('display','none');
+    $('.info').fadeOut(500);
 
-    $('#grid').slideDown('slow');
+    window.setTimeout(function(){
+      $('#grid').slideDown('slow');
+      $('#pause').slideDown('slow');
+    },500);
 
     var canvas = document.getElementById('grid');
     var ctx = canvas.getContext('2d');
@@ -43,6 +45,17 @@ $(document).ready(function(){
 
   }
 
+  function pause(){
+    var pauseState = $('#pause');
+    if(pauseState.html() === 'play_arrow'){
+      pauseState.html('pause');
+      //pause game
+    } else {
+      pauseState.html('play_arrow');
+      //resume game
+    }
+  }
+
   $('#play').click(function(event){
     event.preventDefault();
 
@@ -55,6 +68,14 @@ $(document).ready(function(){
     // window.setTimeout(function(){
     //   $('body').prepend('<audio src='+test+' autoplay></audio>');
     // },5000);
+  });
+
+  $('body').keydown(function(event){
+    if(canvasReady){
+      if(event.keyCode === 32){ //spacebar
+        pause();
+      }
+    }
   });
 
 });

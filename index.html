@@ -6,6 +6,8 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>DJ-ZAX</title>
   <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="css/materialize.min.js">
   <link rel="stylesheet" href="css/styles.css">
   <script src="js/phaser.min.js"></script>
 </head>
@@ -16,17 +18,30 @@
         <source src="media/beeple-crap-exhaust.mp4" type="video/mp4">
     </video>
   </div>
-  <form enctype="multipart/form-data" method="post">
-    <div>
-      <input type="file" id="song" name="song">
-    </div>
-    <div>
-      <button type="submit" id="play">GO</button>
-    </div>
-  </form>
 
+  <div><i id="pause" class="material-icons" style="font-size: 50px">play_arrow</i></div>
   <canvas id="grid" width="400" height="500"></canvas>
 
+  <h2 class="info">How to Play</h2>
+  <div class="info">
+    <p>Select an mp3 and press GO.</p>
+    <p>Use your A, S, D, F keys.</p>
+    <p>Notes will fly down the screen.</p>
+    <p>Press the key when the note enters the white zone.</p>
+    <p>Use Space to pause.</p>
+    <p>GOOD LUCK</p>
+  </div>
+
+  <form enctype="multipart/form-data" method="post">
+    <div>
+      <input type="file" id="song" class="info" name="song">
+    </div>
+    <br>
+    <div>
+      <button type="submit" id="play" class="info">GO</button>
+    </div>
+    <br>
+  </form>
 
 
   <footer>

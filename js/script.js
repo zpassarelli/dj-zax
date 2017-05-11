@@ -2,7 +2,8 @@ $(document).ready(function(){
 
   var inputReady = false;
   var hitsReady = false;
-  var pauseState = false;
+  var notPaused = true;
+  var statusReset = 0;
 
   var score = $('#score');
   var status = $('#status');
@@ -23,12 +24,13 @@ $(document).ready(function(){
     this.x = x;
     this.y = 0;
     this.color = 'cyan';
-    this.velocity = 4;
-    this.active = false;
-    this.notHit = true;
+    this.velocity = 4; //note speed
+    this.active = false; //flag for hit checking
+    this.notHit = true; //flag for missed note
   };
 
   Note.prototype.drawNote = function(){
+    cty.clearRect(this.x-5, this.y-10,100,50);
     cty.fillStyle = this.color;
     cty.fillRect(this.x,this.y,90,30);
     cty.strokeStyle = 'white';
@@ -36,14 +38,15 @@ $(document).ready(function(){
   };
 
   function createGrid(){ //Animate and draw background
-    $('.info').fadeOut(500);
+
+    $('.info').fadeOut(500); //Hide info
 
     window.setTimeout(function(){
-      $('#grid').slideDown('slow');
-      $('#pause').slideDown('slow');
+      $('#grid').slideDown(500); //Show game grid
+      score.fadeIn(500); //Show score
       window.setTimeout(function(){
-        hitsReady = true;
-      },800);
+        hitsReady = true; //its pizza time
+      },500);
     },500);
 
     ctx.fillStyle = 'cyan';
@@ -77,49 +80,36 @@ $(document).ready(function(){
   }
 
   function message(code){ //Change status display
+    statusReset = 2;
     switch(code){
       case 'finish':
-        status.css('color','cyan');
+        status.css('color','gold');
         status.html('FINISH');
         break;
       case 'pause':
+        statusReset = 0;
         status.css('color','gray');
         status.html('PAUSE');
         break;
       case 'perfect':
         status.css('color','gold');
         status.html('PERFECT');
-        window.setTimeout(function(){
-          status.html('');
-        },1000);
         break;
       case 'great':
         status.css('color','lime');
         status.html('GREAT');
-        window.setTimeout(function(){
-          status.html('');
-        },1000);
         break;
       case 'good':
         status.css('color','orange');
         status.html('GOOD');
-        window.setTimeout(function(){
-          status.html('');
-        },1000);
         break;
       case 'early':
         status.css('color','silver');
         status.html('EARLY');
-        window.setTimeout(function(){
-          status.html('');
-        },1000);
         break;
       case 'no':
         status.css('color','red');
         status.html('OH NO');
-        window.setTimeout(function(){
-          status.html('');
-        },1000);
         break;
       case 'count':
         window.setTimeout(function(){
@@ -129,7 +119,7 @@ $(document).ready(function(){
             window.setTimeout(function(){
               status.html('1');
               window.setTimeout(function(){
-                status.html('');
+                status.html('START');
               },1000);
             },1000);
           },1000);
@@ -142,97 +132,81 @@ $(document).ready(function(){
     }
   }
 
-  function numToNote(){ //Convert numbers to notes
-    noteArray = noteArray.map(function(val){
-      return new Note((val*100)+5);
-    });
-    console.log(noteArray);
-  }
-
-
-
-  function checkHit(x){ //Check if input collided with note
-    if(noteArray[row][x] !== null && !pauseState && inputReady){
-      var cNote = noteArray[row][x];
-      if(cNote.notHit){
-        var data = cty.getImageData((x*100)+5,418,1,54).data.filter(function(val,i){
-          return i%4 === 0;
-        });
-        if(data[0] > 0 && data[23] === 0){
-          message('early');
-          cNote.color = 'silver';
-          cNote.notHit = false;
-        } else if(data[15] > 0 && data[37] > 0){
-          score.html(parseInt(score.html(),10)+500);
-          message('perfect');
-          cNote.color = 'gold';
-          cNote.notHit = false;
-        } else if((data[8] > 0 && data[30] > 0)||(data[23] > 0 && data[45] > 0)){
-          score.html(parseInt(score.html(),10)+300);
-          message('great');
-          cNote.color = 'lime';
-          cNote.notHit = false;
-        } else if((data[1] > 0 && data[22] > 0)||(data[30] > 0 && data[52] > 0)){
-          score.html(parseInt(score.html(),10)+100);
-          message('good');
-          cNote.color = 'orange';
-          cNote.notHit = false;
-        }
+  function checkHit(x){ //Check if hit collided with note
+    var cnh;
+    for(var i in activeArray){
+      if(activeArray[i].active && activeArray[i].notHit){
+        cnh = activeArray[i];
       }
     }
-  }
+    if(cnh === undefined){
+      return;
+    }
 
-  // function endRow(){
-  //   for(var i in noteArray[row]){
-  //     if(noteArray[row][i] !== null && noteArray[row][i].y >= 490){
-  //       row++;
-  //     }
-  //   }
-  //   if(row === noteArray.length){
-  //     window.cancelAnimationFrame(raf);
-  //     inputReady = false;
-  //     message('finish');
-  //   }
-  // }
+    var data = cty.getImageData((x*100)+5,418,1,54).data.filter(function(val,i){
+      return i%4 === 0;
+    });
+    if(data[0] > 0 && data[23] === 0){
+      message('early');
+      cnh.color = 'silver';
+      cnh.notHit = false;
+    } else if(data[15] > 0 && data[37] > 0){
+      score.html(parseInt(score.html(),10)+500);
+      message('perfect');
+      cnh.color = 'gold';
+      cnh.notHit = false;
+    } else if((data[8] > 0 && data[30] > 0)||(data[23] > 0 && data[45] > 0)){
+      score.html(parseInt(score.html(),10)+300);
+      message('great');
+      cnh.color = 'lime';
+      cnh.notHit = false;
+    } else if((data[1] > 0 && data[22] > 0)||(data[30] > 0 && data[52] > 0)){
+      score.html(parseInt(score.html(),10)+100);
+      message('good');
+      cnh.color = 'orange';
+      cnh.notHit = false;
+    }
+  }
 
   function animate() { //Animates notes in active array
     raf = window.requestAnimationFrame(animate); //Animation Frame recursion
 
-    for(var i = 0; i < 4; i++){
-      if(noteArray[row][i] === null){
-        continue;
+    for(var i = 0; i < activeArray.length; i++){
+      var cn = activeArray[i];
+      cn.drawNote();
+      cn.y += cn.velocity;
+      if(cn.y > 400 && cn.y < 460){
+        cn.active = true;
       }
-      var cNote = noteArray[row][i];
-      cty.clearRect(i*100,0,100,500);
-      cNote.drawNote();
-      cNote.y += cNote.velocity;
-      // if(cNote.y > 350){
-      //   cNote.active = true;
-      // }
-      if(cNote.y >= 500){
-        if(cNote.notHit){
-          score -= 200;
-          message('no');
+      if(cn.y >= 460 && cn.notHit){
+        cn.color = '#00b0b0';
+      }
+      if(cn.y >= 500){
+        if(cn.notHit){
+          console.log(cn);
+          score.html(parseInt(score.html(),10)-200);
         }
+        activeArray.shift();
+        cty.clearRect(cn.x-5,480,100,20);
       }
     }
   }
 
   function pause(){ //Pause and unpause game
-    if(pauseState){
-      raf = window.requestAnimationFrame(animate);
-      pauseState = false;
-      message('');
-      //document.getElementById('bgvid').play();
-    } else {
+    if(notPaused){
       window.cancelAnimationFrame(raf);
-      pauseState = true;
+      notPaused = false; //Game is now not notPaused, therefore paused
       message('pause');
       //document.getElementById('bgvid').pause();
+    } else {
+      raf = window.requestAnimationFrame(animate);
+      notPaused = true;
+      message('');
+      //document.getElementById('bgvid').play();
     }
   }
 
-  $('#go').click(function(event){ //Initialize and start game
+  $('#start').click(function(event){ //Initialize and start game
     event.preventDefault();
 
     // var selectedFile = document.getElementById('song').files[0];
@@ -240,16 +214,52 @@ $(document).ready(function(){
     //var test = "./media/rules.mp3";
 
     createGrid();
-    message('count');
 
-    noteArray = [0,1,2,3,0,1,2,3];
+    noteArray = [2,3,1,3,2,0,3,3,2,3,3,1,3,1,0,0,3,3,3];
+    noteArray = noteArray.map(function(val){ //Convert chewed data to notes
+      return new Note((val*100)+5);
+    });
+
+    message('count'); //Countdown to start
 
     window.setTimeout(function(){
       //Start playing song
       //$('body').prepend('<audio src='+test+' autoplay></audio>');
-      inputReady = true;
-      numToNote();
-      //animate();
+
+      inputReady = true; //Keyboard listener functions active
+
+      //Time for the game loop boys
+      var gameLoop = setInterval(function(){
+          if(noteArray.length){
+            activeArray.push(noteArray.shift());
+          }
+
+          if(noteArray.length === 0 && activeArray.length === 0){
+            window.cancelAnimationFrame(raf);
+            if(score.html() < 0){
+              message('no');
+            }else{
+              message('finish');
+            }
+            $('#grid').fadeOut(2000);
+            $('#endScore').fadeIn(2000);
+            inputReady = false;
+            hitsReady = false;
+            window.clearInterval(gameLoop);
+          }
+
+          if(statusReset > 0){
+            statusReset--;
+          }
+          if(statusReset === 0){
+            status.html('');
+          }
+
+
+      },500);
+
+      animate();
+
     },4000);
   });
 
@@ -261,7 +271,7 @@ $(document).ready(function(){
         }
       }
       if(event.keyCode == '65'){ //A
-        if(inputReady){
+        if(inputReady && notPaused){
           checkHit(0);
         }
         if(hitsReady){
@@ -274,7 +284,7 @@ $(document).ready(function(){
         }
       }
       if(event.keyCode == '83'){ //S
-        if(inputReady){
+        if(inputReady && notPaused){
           checkHit(1);
         }
         if(hitsReady){
@@ -287,7 +297,7 @@ $(document).ready(function(){
         }
       }
       if(event.keyCode == '68'){ //D
-        if(inputReady){
+        if(inputReady && notPaused){
           checkHit(2);
         }
         if(hitsReady){
@@ -300,7 +310,7 @@ $(document).ready(function(){
         }
       }
       if(event.keyCode == '70'){ //F
-        if(inputReady){
+        if(inputReady && notPaused){
           checkHit(3);
         }
         if(hitsReady){

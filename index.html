@@ -11,7 +11,7 @@
 </head>
 <body>
   <header>
-    <h1>DJ-<span style="color:cyan">Z</span>AX</h1>
+    <h1 class="center backing">DJ-<span style="color:cyan">Z</span>AX</h1>
   </header>
   <!-- <div class="fullscreen-bg">
     <video loop muted autoplay id="bgvid" poster="media/exhaust.png" class="fullscreen-bg__video">
@@ -19,39 +19,38 @@
     </video>
   </div> -->
 
-  <div style="position: relative;">
-    <canvas id="grid" width="400" height="500"></canvas>
-    <canvas id="grid2" width="400" height="500"></canvas>
-    <canvas id="grid3" width="400" height="500"></canvas>
-  </div>
+    <canvas id="grid" class="center" width="400" height="500"></canvas>
+    <canvas id="grid2" class="center" width="400" height="500"></canvas>
+    <canvas id="grid3" class="center" width="400" height="500"></canvas>
 
   <span id="status"></span>
-  <span id="score">0</span>
+  <span id="score" class="center">0</span>
+  <span id="endScore" class="center">Score:</span>
 
-  <h3 class="info">How to Play</h3>
-  <div class="info">
-    <p>Select an mp3 and press GO.</p>
-    <p>Use your A, S, D, F keys.</p>
+  <div class="info center backing">
+    <h3>How to Play</h3>
+    <p>Select an mp3 and press START.</p>
     <p>Notes will fly down the screen.</p>
-    <p>Press the key when the note enters the white zone.</p>
-    <p>Use Space to pause.</p>
+    <p>Use your A, S, D, F keys.</p>
+    <p>Press the key when the note enters the white hit zone.</p>
+    <p>Use Space to pause if you feel a little troubled.</p>
     <p>GOOD LUCK</p>
   </div>
 
   <form enctype="multipart/form-data" method="post">
     <div>
-      <input type="file" id="song" class="info" name="song">
+      <input type="file" id="song" class="info center" name="song">
     </div>
     <br>
     <div>
-      <button type="submit" id="go" class="info">GO</button>
+      <button type="submit" id="start" class="info center">START</button>
     </div>
     <br>
   </form>
-  <p id="danger">Sorry, this game is not supported on mobile yet.</p>
+  <p id="danger" class="center">Sorry, this game is not supported on mobile yet.</p>
 
 
-  <footer>
+  <footer class="center backing">
     <small>By ZP | 2017 | Background graphic by <a href="http://beeple-crap.com">beeple-crap</a></small>
   </footer>
 

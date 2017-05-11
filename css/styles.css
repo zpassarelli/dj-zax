@@ -1,28 +1,46 @@
 * {
   font-family: 'Share Tech Mono',monospace;
   color: white;
-  text-align: center;
+  width: auto;
 }
 
-body, #go {
+body, #start {
   background-color: black;
 }
 
+.center {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+.backing {
+  padding: 0 1em;
+  background-color: rgba(0,0,0,0.75);
+}
+
+#start {
+  top: 13em;
+  height: 50px;
+  width: 100px;
+  font-size: 30px;
+}
+
 #danger {
+  text-align: center;
+  top: 5em;
   display: none;
 }
 
 #song {
+  top: 25em;
   background-color: black;
   border: 1px solid white;
 }
 
 canvas {
+  top: 5em;
   z-index: -3;
-  position: absolute;
-  left: 50%;
-  margin-right: -50%;
-  transform: translate(-50%);
 }
 
 #grid {
@@ -41,77 +59,86 @@ canvas {
   border: 1px hidden;
 }
 
-#status, #score {
-  color: pink;
+#status {
+  color: crimson;
   font-size: 100px;
   font-style: italic;
   position: fixed;
   z-index: 10;
-  top: 50%;
   left: 50%;
-  transform: translate(-50%);
+  transform: translate(-50%, 30vh);
+}
+
+#score, #endScore {
+  z-index: -5;
+  top: 5em;
+  color: crimson;
+  font-size: 80px;
+  font-style: italic;
+  display: none;
+  transform: translate(-30%);
+  width: 3.57em;
+  background-color: rgba(0,0,0,0.75);
 }
 
 #score {
-  display: none;
-  left: 75%
+  width: 3em;
+  transform: translate(2.5em);
 }
 
 .info {
-  background-color: rgba(0,0,0,0.75);
-  margin: 5px;
+  top: 5em;
+  text-align: center;
 }
 
 footer {
-  position: fixed;
-  top: 95%;
-  left: 50%;
-  margin-right: -50%;
-  transform: translate(-50%);
+  margin: 0;
+  text-align: center;
+  top: 93vh;
 }
 
 .fullscreen-bg {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    overflow: hidden;
-    z-index: -100;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  z-index: -50;
 }
 
 .fullscreen-bg__video {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: auto;
-    height: auto;
-    min-width: 100%;
-    min-height: 100%;
-    -webkit-transform: translate(-50%, -50%);
-       -moz-transform: translate(-50%, -50%);
-        -ms-transform: translate(-50%, -50%);
-	    transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: auto;
+  height: auto;
+  min-width: 100%;
+  min-height: 100%;
+  -webkit-transform: translate(-50%, -50%);
+     -moz-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 
 @media (max-width: 769px) {
-    #go {
-      display: none;
-    }
+  #start, #song, .info {
+    display: none;
+  }
 
-    #danger {
-      display:inherit;
-    }
+  #danger {
+    display:inherit;
+  }
 
-    .fullscreen-bg {
-        position: fixed;
-        background-image: url('./../media/exhaust.png');
-        background-position: center;
-        background-size:cover;
+  .fullscreen-bg {
+    position: fixed;
+    background-image: url('./../media/exhaust.png');
+    background-position: center;
+    background-size:cover;
 
-    }
+  }
 
-    .fullscreen-bg__video {
-        display: none;
-    }
+  .fullscreen-bg__video {
+    display: none;
+  }
 }

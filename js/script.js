@@ -3,14 +3,18 @@ $(document).ready(function(){
   var inputReady = false;
   var hitsReady = false;
   var pauseState = false;
-  var score = 0;
+
+  var score = $('#score');
   var status = $('#status');
-  var ctx = document.getElementById('grid').getContext('2d');
-  var cty = document.getElementById('grid2').getContext('2d');
-  var ctz = document.getElementById('grid3').getContext('2d');
-  var raf;
-  var noteArray = [];
-  var row = 0;
+
+  var ctx = document.getElementById('grid').getContext('2d'); //Background layer context
+  var cty = document.getElementById('grid2').getContext('2d'); //Note layer context
+  var ctz = document.getElementById('grid3').getContext('2d'); //Hit layer context
+
+  var raf; //Request Animation Frame variable
+
+  var noteArray = []; //Queues all notes that need to be animated
+  var activeArray = []; //Holds all notes currently animating
 
   var hit_img = new Image();
   hit_img.src = './media/hit.png';
@@ -31,7 +35,7 @@ $(document).ready(function(){
     cty.strokeRect(this.x,this.y,90,30);
   };
 
-  function createGrid(){
+  function createGrid(){ //Animate and draw background
     $('.info').fadeOut(500);
 
     window.setTimeout(function(){
@@ -72,19 +76,7 @@ $(document).ready(function(){
     ctx.strokeText('F',320,460);
   }
 
-  function addLine(arr){
-    var newLine = arr.map(function(val,i){
-      if(val){
-        return new Note((i*100)+5);
-      } else {
-        return null;
-      }
-    });
-    noteArray.push(newLine);
-  }
-
-
-  function message(code){
+  function message(code){ //Change status display
     switch(code){
       case 'finish':
         status.css('color','cyan');
@@ -150,7 +142,16 @@ $(document).ready(function(){
     }
   }
 
-  function checkHit(x){
+  function numToNote(){ //Convert numbers to notes
+    noteArray = noteArray.map(function(val){
+      return new Note((val*100)+5);
+    });
+    console.log(noteArray);
+  }
+
+
+
+  function checkHit(x){ //Check if input collided with note
     if(noteArray[row][x] !== null && !pauseState && inputReady){
       var cNote = noteArray[row][x];
       if(cNote.notHit){
@@ -162,17 +163,17 @@ $(document).ready(function(){
           cNote.color = 'silver';
           cNote.notHit = false;
         } else if(data[15] > 0 && data[37] > 0){
-          score += 500;
+          score.html(parseInt(score.html(),10)+500);
           message('perfect');
           cNote.color = 'gold';
           cNote.notHit = false;
         } else if((data[8] > 0 && data[30] > 0)||(data[23] > 0 && data[45] > 0)){
-          score += 300;
+          score.html(parseInt(score.html(),10)+300);
           message('great');
           cNote.color = 'lime';
           cNote.notHit = false;
         } else if((data[1] > 0 && data[22] > 0)||(data[30] > 0 && data[52] > 0)){
-          score += 100;
+          score.html(parseInt(score.html(),10)+100);
           message('good');
           cNote.color = 'orange';
           cNote.notHit = false;
@@ -181,20 +182,22 @@ $(document).ready(function(){
     }
   }
 
-  function endRow(){
-    for(var i in noteArray[row]){
-      if(noteArray[row][i] !== null && noteArray[row][i].y >= 490){
-        row++;
-      }
-    }
-    if(row === noteArray.length){
-      window.cancelAnimationFrame(raf);
-      inputReady = false;
-      message('finish');
-    }
-  }
+  // function endRow(){
+  //   for(var i in noteArray[row]){
+  //     if(noteArray[row][i] !== null && noteArray[row][i].y >= 490){
+  //       row++;
+  //     }
+  //   }
+  //   if(row === noteArray.length){
+  //     window.cancelAnimationFrame(raf);
+  //     inputReady = false;
+  //     message('finish');
+  //   }
+  // }
 
-  function animate() {
+  function animate() { //Animates notes in active array
+    raf = window.requestAnimationFrame(animate); //Animation Frame recursion
+
     for(var i = 0; i < 4; i++){
       if(noteArray[row][i] === null){
         continue;
@@ -213,11 +216,9 @@ $(document).ready(function(){
         }
       }
     }
-    //endRow();
-    raf = window.requestAnimationFrame(animate);
   }
 
-  function pause(){
+  function pause(){ //Pause and unpause game
     if(pauseState){
       raf = window.requestAnimationFrame(animate);
       pauseState = false;
@@ -231,7 +232,7 @@ $(document).ready(function(){
     }
   }
 
-  $('#go').click(function(event){
+  $('#go').click(function(event){ //Initialize and start game
     event.preventDefault();
 
     // var selectedFile = document.getElementById('song').files[0];
@@ -241,16 +242,18 @@ $(document).ready(function(){
     createGrid();
     message('count');
 
+    noteArray = [0,1,2,3,0,1,2,3];
+
     window.setTimeout(function(){
+      //Start playing song
       //$('body').prepend('<audio src='+test+' autoplay></audio>');
       inputReady = true;
-      addLine([1,0,1,0]);
-      addLine([0,1,0,1]);
-      animate();
+      numToNote();
+      //animate();
     },4000);
   });
 
-  $(window).keydown(function(event){
+  $(window).keydown(function(event){ //Listener for all key inputs
       if(event.keyCode == '32'){ //spacebar
         event.preventDefault();
         if(inputReady){
@@ -262,10 +265,10 @@ $(document).ready(function(){
           checkHit(0);
         }
         if(hitsReady){
-          window.clearInterval(time1);
+          window.clearInterval(hit1timer);
           ctz.clearRect(0,430,100,30);
           ctz.drawImage(hit_img,-5,430,110,30);
-          var time1 = window.setTimeout(function(){
+          var hit1timer = window.setTimeout(function(){
             ctz.clearRect(0,430,100,30);
           },200);
         }
@@ -275,10 +278,10 @@ $(document).ready(function(){
           checkHit(1);
         }
         if(hitsReady){
-          window.clearInterval(time2);
+          window.clearInterval(hit2timer);
           ctz.clearRect(100,430,100,30);
           ctz.drawImage(hit_img,95,430,110,30);
-          var time2 = window.setTimeout(function(){
+          var hit2timer = window.setTimeout(function(){
             ctz.clearRect(100,430,100,30);
           },200);
         }
@@ -288,10 +291,10 @@ $(document).ready(function(){
           checkHit(2);
         }
         if(hitsReady){
-          window.clearInterval(time3);
+          window.clearInterval(hit3timer);
           ctz.clearRect(200,430,100,30);
           ctz.drawImage(hit_img,195,430,110,30);
-          var time3 = window.setTimeout(function(){
+          var hit3timer = window.setTimeout(function(){
             ctz.clearRect(200,430,100,30);
           },200);
         }
@@ -301,10 +304,10 @@ $(document).ready(function(){
           checkHit(3);
         }
         if(hitsReady){
-          window.clearInterval(time4);
+          window.clearInterval(hit4timer);
           ctz.clearRect(300,430,100,30);
           ctz.drawImage(hit_img,295,430,110,30);
-          var time4 = window.setTimeout(function(){
+          var hit4timer = window.setTimeout(function(){
             ctz.clearRect(300,430,100,30);
           },200);
         }

@@ -53,7 +53,8 @@ canvas {
 }
 
 #score {
-  transform: translate(70%);
+  display: none;
+  left: 75%
 }
 
 .info {

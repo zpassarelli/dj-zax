@@ -164,19 +164,19 @@ $(document).ready(function(){
       cnh.stroke = 'cyan';
       cnh.notHit = false;
     } else if(data[15] > 0 && data[37] > 0){
-      score.html(parseInt(score.html(),10)+500);
+      score.html(parseInt(score.html(),10)+1000);
       message('perfect');
       cnh.color = 'gold';
       cnh.stroke = 'cyan';
       cnh.notHit = false;
     } else if((data[8] > 0 && data[30] > 0)||(data[23] > 0 && data[45] > 0)){
-      score.html(parseInt(score.html(),10)+300);
+      score.html(parseInt(score.html(),10)+500);
       message('great');
       cnh.color = 'lime';
       cnh.stroke = 'cyan';
       cnh.notHit = false;
     } else if((data[1] > 0 && data[22] > 0)||(data[30] > 0 && data[52] > 0)){
-      score.html(parseInt(score.html(),10)+100);
+      score.html(parseInt(score.html(),10)+300);
       message('good');
       cnh.color = 'orange';
       cnh.stroke = 'cyan';

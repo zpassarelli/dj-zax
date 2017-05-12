@@ -20,7 +20,7 @@ body, #start {
 }
 
 #start {
-  top: 13em;
+  top: 70vh;
   height: 50px;
   width: 100px;
   font-size: 30px;
@@ -33,7 +33,7 @@ body, #start {
 }
 
 #song {
-  top: 25em;
+  top: 60vh;
   background-color: black;
   border: 1px solid white;
 }
@@ -71,18 +71,18 @@ canvas {
 
 #score, #endScore {
   z-index: -5;
-  top: 5em;
+  top: 10vh;
   color: crimson;
   font-size: 80px;
   font-style: italic;
   display: none;
   transform: translate(-30%);
-  width: 3.57em;
+  width: 3.58em;
   background-color: rgba(0,0,0,0.75);
 }
 
 #score {
-  width: 3em;
+  width: 4em;
   transform: translate(2.5em);
 }
 

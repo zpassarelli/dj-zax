@@ -265,7 +265,7 @@ $(document).ready(function(){
 
     // var selectedFile = document.getElementById('song').files[0];
     // console.log(selectedFile);
-    var test = "./media/rules.mp3";
+    //var test = "./media/rules.mp3";
 
     createGrid();
 
@@ -278,7 +278,7 @@ $(document).ready(function(){
 
     window.setTimeout(function(){
       //Start playing song
-      $('body').prepend('<audio id="music" src='+test+' autoplay></audio>');
+      document.getElementById('music').play();
 
       inputReady = true; //Keyboard listener functions active
 

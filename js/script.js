@@ -13,6 +13,11 @@ $(document).ready(function(){
   var ctz = document.getElementById('grid3').getContext('2d'); //Hit layer context
 
   var raf; //Request Animation Frame variable
+  var gameLoop;
+  var interval = 490;
+  var startTime;
+  var pausedTime;
+  var remainingTime;
 
   var noteArray = []; //Queues all notes that need to be animated
   var activeArray = []; //Holds all notes currently animating
@@ -24,6 +29,7 @@ $(document).ready(function(){
     this.x = x;
     this.y = 0;
     this.color = 'cyan';
+    this.stroke = 'white';
     this.velocity = 4; //note speed
     this.active = false; //flag for hit checking
     this.notHit = true; //flag for missed note
@@ -33,9 +39,15 @@ $(document).ready(function(){
     cty.clearRect(this.x-5, this.y-10,100,50);
     cty.fillStyle = this.color;
     cty.fillRect(this.x,this.y,90,30);
-    cty.strokeStyle = 'white';
+    cty.strokeStyle = this.stroke;
     cty.strokeRect(this.x,this.y,90,30);
   };
+
+  function noteGenerator(length){
+    for(var i = 0; i < length; i++){
+      noteArray[i] = Math.floor(Math.random()*4);
+    }
+  }
 
   function createGrid(){ //Animate and draw background
 
@@ -149,22 +161,54 @@ $(document).ready(function(){
     if(data[0] > 0 && data[23] === 0){
       message('early');
       cnh.color = 'silver';
+      cnh.stroke = 'cyan';
       cnh.notHit = false;
     } else if(data[15] > 0 && data[37] > 0){
       score.html(parseInt(score.html(),10)+500);
       message('perfect');
       cnh.color = 'gold';
+      cnh.stroke = 'cyan';
       cnh.notHit = false;
     } else if((data[8] > 0 && data[30] > 0)||(data[23] > 0 && data[45] > 0)){
       score.html(parseInt(score.html(),10)+300);
       message('great');
       cnh.color = 'lime';
+      cnh.stroke = 'cyan';
       cnh.notHit = false;
     } else if((data[1] > 0 && data[22] > 0)||(data[30] > 0 && data[52] > 0)){
       score.html(parseInt(score.html(),10)+100);
       message('good');
       cnh.color = 'orange';
+      cnh.stroke = 'cyan';
       cnh.notHit = false;
+    }
+  }
+
+  function sunnyGardenSunday(){
+    startTime = new Date().getMilliseconds();
+    if(noteArray.length){
+      activeArray.push(noteArray.shift());
+    }
+
+    if(noteArray.length === 0 && activeArray.length === 0){
+      window.cancelAnimationFrame(raf);
+      if(score.html() < 0){
+        message('no');
+      }else{
+        message('finish');
+      }
+      $('#grid').fadeOut(2000);
+      $('#endScore').fadeIn(2000);
+      inputReady = false;
+      hitsReady = false;
+      window.clearInterval(gameLoop);
+    }
+
+    if(statusReset > 0){
+      statusReset--;
+    }
+    if(statusReset === 0){
+      status.html('');
     }
   }
 
@@ -183,8 +227,7 @@ $(document).ready(function(){
       }
       if(cn.y >= 500){
         if(cn.notHit){
-          console.log(cn);
-          score.html(parseInt(score.html(),10)-200);
+          score.html(parseInt(score.html(),10)-500);
         }
         activeArray.shift();
         cty.clearRect(cn.x-5,480,100,20);
@@ -194,15 +237,26 @@ $(document).ready(function(){
 
   function pause(){ //Pause and unpause game
     if(notPaused){
+      window.clearInterval(gameLoop);
+      pausedTime = Math.abs(startTime - new Date().getMilliseconds());
+      remainingTime = interval - pausedTime;
+      console.log("start: "+startTime+" paused: "+pausedTime+" remain: "+remainingTime);
       window.cancelAnimationFrame(raf);
       notPaused = false; //Game is now not notPaused, therefore paused
       message('pause');
-      //document.getElementById('bgvid').pause();
+      document.getElementById('music').pause();
+      document.getElementById('bgvid').pause();
     } else {
+      gameLoop = setTimeout(function(){
+        sunnyGardenSunday();
+        gameLoop = setInterval(sunnyGardenSunday,interval);
+      },remainingTime);
+
       raf = window.requestAnimationFrame(animate);
       notPaused = true;
       message('');
-      //document.getElementById('bgvid').play();
+      document.getElementById('music').play();
+      document.getElementById('bgvid').play();
     }
   }
 
@@ -211,11 +265,11 @@ $(document).ready(function(){
 
     // var selectedFile = document.getElementById('song').files[0];
     // console.log(selectedFile);
-    //var test = "./media/rules.mp3";
+    var test = "./media/rules.mp3";
 
     createGrid();
 
-    noteArray = [2,3,1,3,2,0,3,3,2,3,3,1,3,1,0,0,3,3,3];
+    noteGenerator(275);
     noteArray = noteArray.map(function(val){ //Convert chewed data to notes
       return new Note((val*100)+5);
     });
@@ -224,39 +278,11 @@ $(document).ready(function(){
 
     window.setTimeout(function(){
       //Start playing song
-      //$('body').prepend('<audio src='+test+' autoplay></audio>');
+      $('body').prepend('<audio id="music" src='+test+' autoplay></audio>');
 
       inputReady = true; //Keyboard listener functions active
 
-      //Time for the game loop boys
-      var gameLoop = setInterval(function(){
-          if(noteArray.length){
-            activeArray.push(noteArray.shift());
-          }
-
-          if(noteArray.length === 0 && activeArray.length === 0){
-            window.cancelAnimationFrame(raf);
-            if(score.html() < 0){
-              message('no');
-            }else{
-              message('finish');
-            }
-            $('#grid').fadeOut(2000);
-            $('#endScore').fadeIn(2000);
-            inputReady = false;
-            hitsReady = false;
-            window.clearInterval(gameLoop);
-          }
-
-          if(statusReset > 0){
-            statusReset--;
-          }
-          if(statusReset === 0){
-            status.html('');
-          }
-
-
-      },500);
+      gameLoop = setInterval(sunnyGardenSunday,interval);
 
       animate();
 

@@ -1,7 +1,7 @@
 # DJ-ZAX
 Rhythm game - gSchool Q1 Project
 
-Surge Deployment: dj-zax.surge.sh
+Surge Deployment: http://dj-zax.surge.sh
 
 ### Project Proposal
 #### Describe your app in 3 sentences.

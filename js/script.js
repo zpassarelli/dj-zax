@@ -1,5 +1,14 @@
 $(document).ready(function(){
 
+  var music = document.createElement('audio');
+  music.setAttribute('src', './media/ignite-infinity.mp3');
+  music.volume = 0.5;
+  music.load();
+  music.addEventListener("canplaythrough", function(){
+    $('#start').text('START');
+    $('#start').attr('disabled',false);
+  }, true);
+
   var inputReady = false;
   var hitsReady = false;
   var notPaused = true;
@@ -14,8 +23,8 @@ $(document).ready(function(){
 
   var raf; //Request Animation Frame variable
   var gameLoop;
-  var interval = 490;
-  var startTime;
+  var interval = 500; //Time interval between notes
+  var startTime; //Variables for pause functionality
   var pausedTime;
   var remainingTime;
 
@@ -24,6 +33,33 @@ $(document).ready(function(){
 
   var hit_img = new Image();
   hit_img.src = './media/hit.png';
+
+  $('#start').click(function(){ //Initialize and start game
+
+    $('.info').fadeOut(500); //Hide info
+
+    createGrid(); //Draw game area
+
+    numGenerator(Math.round(music.duration * 1.85)); //Generate numbers according to song duration
+
+    noteArray = noteArray.map(function(val){ //Convert numbers to note instances
+      return new Note((val*100)+5);
+    });
+
+    message('count'); //Countdown to start
+    music.play();
+
+    window.setTimeout(function(){
+      //Start playing song
+
+      inputReady = true; //Keyboard listener functions active
+
+      gameLoop = setInterval(sunnyGardenSunday,interval);
+
+      animate();
+
+    },1000);
+  });
 
   var Note = function(x){
     this.x = x;
@@ -43,15 +79,13 @@ $(document).ready(function(){
     cty.strokeRect(this.x,this.y,90,30);
   };
 
-  function noteGenerator(length){
+  function numGenerator(length){ //Fills array with random numbers
     for(var i = 0; i < length; i++){
       noteArray[i] = Math.floor(Math.random()*4);
     }
   }
 
   function createGrid(){ //Animate and draw background
-
-    $('.info').fadeOut(500); //Hide info
 
     window.setTimeout(function(){
       $('#grid').slideDown(500); //Show game grid
@@ -100,7 +134,7 @@ $(document).ready(function(){
         break;
       case 'pause':
         statusReset = 0;
-        status.css('color','gray');
+        status.css('color','cyan');
         status.html('PAUSE');
         break;
       case 'perfect':
@@ -132,10 +166,11 @@ $(document).ready(function(){
               status.html('1');
               window.setTimeout(function(){
                 status.html('START');
-              },1000);
-            },1000);
-          },1000);
-        },1000);
+                statusReset = 5;
+              },500);
+            },500);
+          },500);
+        },500);
         break;
       default:
         status.css('color','pink');
@@ -149,6 +184,7 @@ $(document).ready(function(){
     for(var i in activeArray){
       if(activeArray[i].active && activeArray[i].notHit){
         cnh = activeArray[i];
+        break;
       }
     }
     if(cnh === undefined){
@@ -244,7 +280,7 @@ $(document).ready(function(){
       window.cancelAnimationFrame(raf);
       notPaused = false; //Game is now not notPaused, therefore paused
       message('pause');
-      document.getElementById('music').pause();
+      music.pause();
       document.getElementById('bgvid').pause();
     } else {
       gameLoop = setTimeout(function(){
@@ -255,39 +291,10 @@ $(document).ready(function(){
       raf = window.requestAnimationFrame(animate);
       notPaused = true;
       message('');
-      document.getElementById('music').play();
+      music.play();
       document.getElementById('bgvid').play();
     }
   }
-
-  $('#start').click(function(event){ //Initialize and start game
-    event.preventDefault();
-
-    // var selectedFile = document.getElementById('song').files[0];
-    // console.log(selectedFile);
-    //var test = "./media/rules.mp3";
-
-    createGrid();
-
-    noteGenerator(275);
-    noteArray = noteArray.map(function(val){ //Convert chewed data to notes
-      return new Note((val*100)+5);
-    });
-
-    message('count'); //Countdown to start
-
-    window.setTimeout(function(){
-      //Start playing song
-      document.getElementById('music').play();
-
-      inputReady = true; //Keyboard listener functions active
-
-      gameLoop = setInterval(sunnyGardenSunday,interval);
-
-      animate();
-
-    },4000);
-  });
 
   $(window).keydown(function(event){ //Listener for all key inputs
       if(event.keyCode == '32'){ //spacebar

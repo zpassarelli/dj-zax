@@ -4,8 +4,15 @@
   width: auto;
 }
 
-body, #start {
+body {
   background-color: black;
+  height: 100%;
+}
+
+footer {
+  bottom: 0;
+  margin-bottom: 1em;
+  text-align: center;
 }
 
 .center {
@@ -19,23 +26,23 @@ body, #start {
   background-color: rgba(0,0,0,0.75);
 }
 
+.info {
+  top: 5em;
+  padding: 1em;
+  text-align: center;
+}
+
 #start {
-  top: 70vh;
   height: 50px;
-  width: 100px;
+  width: 200px;
   font-size: 30px;
+  background-color: black;
 }
 
 #danger {
   text-align: center;
   top: 5em;
   display: none;
-}
-
-#song {
-  top: 60vh;
-  background-color: black;
-  border: 1px solid white;
 }
 
 canvas {
@@ -71,7 +78,7 @@ canvas {
 
 #score, #endScore {
   z-index: -5;
-  top: 10vh;
+  top: 15vh;
   color: crimson;
   font-size: 80px;
   font-style: italic;
@@ -84,17 +91,6 @@ canvas {
 #score {
   width: 4em;
   transform: translate(2.5em);
-}
-
-.info {
-  top: 5em;
-  text-align: center;
-}
-
-footer {
-  margin: 0;
-  text-align: center;
-  top: 93vh;
 }
 
 .fullscreen-bg {
@@ -122,7 +118,7 @@ footer {
 }
 
 @media (max-width: 769px) {
-  #start, #song, .info {
+  #start, .info {
     display: none;
   }
 

@@ -6,8 +6,8 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>DJ-ZAX</title>
   <link rel="shortcut icon" href="faviconz.ico" />
-  <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" />
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
   <header>
@@ -19,11 +19,9 @@
     </video>
   </div>
 
-  <audio id="music" src="./media/rules.mp3"></audio>
-
-    <canvas id="grid" class="center" width="400" height="500"></canvas>
-    <canvas id="grid2" class="center" width="400" height="500"></canvas>
-    <canvas id="grid3" class="center" width="400" height="500"></canvas>
+  <canvas id="grid" class="center" width="400" height="500"></canvas>
+  <canvas id="grid2" class="center" width="400" height="500"></canvas>
+  <canvas id="grid3" class="center" width="400" height="500"></canvas>
 
   <span id="status"></span>
   <span id="score" class="center">0</span>
@@ -37,25 +35,16 @@
     <p>Press the key when the note enters the white hit zone.</p>
     <p>Use Space to pause if you feel a little troubled.</p>
     <p>GOOD LUCK</p>
+    <button type="button" id="start" disabled="true" >LOADING</button>
   </div>
 
-  <form enctype="multipart/form-data" method="post">
-    <div>
-      <!-- <input type="file" disabled id="song" class="info center" name="song"> -->
-    </div>
-    <br>
-    <div>
-      <button type="submit" id="start" class="info center">START</button>
-    </div>
-    <br>
-  </form>
-  <p id="danger" class="center">Sorry, this game is not supported on mobile yet.</p>
 
+  <p id="danger" class="center">Sorry, this game is not supported on mobile.</p>
 
   <footer class="center backing">
     <small>By ZP | 2017 | Background graphic by <a href="http://beeple-crap.com">beeple-crap</a></small>
     <br>
-    <small>Demo Song: Rules of Nature [Platinum Mix] by Jason Miller</small>
+    <small>Demo Song: <span id="credit">Ignite Infinity [Short vers.] by Annette Marie Cotrill</span></small>
   </footer>
 
   <script

@@ -24,9 +24,11 @@ $(document).ready(function(){
   var raf; //Request Animation Frame variable
   var gameLoop;
   var interval = 500; //Time interval between notes
-  var startTime; //Variables for pause functionality
+  var velocity = 4.2; //Note speed
+
+  var startTime; //Variables for timing
+  var timeElapsed = 0;
   var pausedTime;
-  var remainingTime;
 
   var noteArray = []; //Queues all notes that need to be animated
   var activeArray = []; //Holds all notes currently animating
@@ -50,23 +52,101 @@ $(document).ready(function(){
     music.play();
 
     window.setTimeout(function(){
-      //Start playing song
 
       inputReady = true; //Keyboard listener functions active
 
-      gameLoop = setInterval(sunnyGardenSunday,interval);
+      startTime = Date.now();
+
+      gameLoop = setTimeout(sunnyGardenSunday,interval);
 
       animate();
 
     },1000);
   });
 
+  function sunnyGardenSunday(){
+    timeElapsed += interval;
+    var diff = (Date.now() - startTime) - timeElapsed;
+    console.log(diff);
+
+    gameLoop = window.setTimeout(sunnyGardenSunday, (interval - diff));
+
+    if(noteArray.length){
+      activeArray.push(noteArray.shift());
+    }
+
+    if(noteArray.length === 0 && activeArray.length === 0){
+      window.cancelAnimationFrame(raf);
+      if(score.html() < 0){
+        message('no');
+      }else{
+        message('finish');
+      }
+      $('#grid').fadeOut(2000);
+      $('#endScore').fadeIn(2000);
+      inputReady = false;
+      hitsReady = false;
+    }
+
+    if(statusReset > 0){
+      statusReset--;
+    }
+    if(statusReset === 0){
+      status.html('');
+    }
+  }
+
+  function animate() { //Animates notes in active array
+    raf = window.requestAnimationFrame(animate); //Animation Frame recursion
+
+    for(var i = 0; i < activeArray.length; i++){
+      var cn = activeArray[i];
+      cn.drawNote();
+      cn.y += cn.velocity;
+      if(cn.y > 400 && cn.y < 460){
+        cn.active = true;
+      }
+      if(cn.y >= 460 && cn.notHit){
+        cn.color = '#00b0b0';
+      }
+      if(cn.y >= 500){
+        if(cn.notHit){
+          score.html(parseInt(score.html(),10)-500);
+        }
+        activeArray.shift();
+        cty.clearRect(cn.x-5,480,100,20);
+      }
+    }
+  }
+
+  function pause(){ //Pause and unpause game
+    if(notPaused){
+      window.clearTimeout(gameLoop);
+      window.cancelAnimationFrame(raf);
+      remainingTime = (Date.now() - startTime) - timeElapsed;
+      notPaused = false; //Game is now not notPaused, therefore paused
+      message('pause');
+      music.pause();
+      document.getElementById('bgvid').pause();
+    } else {
+      timeElapsed = 0;
+      startTime = Date.now() - remainingTime;
+      gameLoop = setTimeout(sunnyGardenSunday, interval - remainingTime);
+
+      raf = window.requestAnimationFrame(animate);
+      notPaused = true;
+      message('');
+      music.play();
+      document.getElementById('bgvid').play();
+    }
+  }
+
   var Note = function(x){
     this.x = x;
     this.y = 0;
     this.color = 'cyan';
     this.stroke = 'white';
-    this.velocity = 4; //note speed
+    this.velocity = velocity; //note speed
     this.active = false; //flag for hit checking
     this.notHit = true; //flag for missed note
   };
@@ -134,7 +214,7 @@ $(document).ready(function(){
         break;
       case 'pause':
         statusReset = 0;
-        status.css('color','cyan');
+        status.css('color','white');
         status.html('PAUSE');
         break;
       case 'perfect':
@@ -217,82 +297,6 @@ $(document).ready(function(){
       cnh.color = 'orange';
       cnh.stroke = 'cyan';
       cnh.notHit = false;
-    }
-  }
-
-  function sunnyGardenSunday(){
-    startTime = new Date().getMilliseconds();
-    if(noteArray.length){
-      activeArray.push(noteArray.shift());
-    }
-
-    if(noteArray.length === 0 && activeArray.length === 0){
-      window.cancelAnimationFrame(raf);
-      if(score.html() < 0){
-        message('no');
-      }else{
-        message('finish');
-      }
-      $('#grid').fadeOut(2000);
-      $('#endScore').fadeIn(2000);
-      inputReady = false;
-      hitsReady = false;
-      window.clearInterval(gameLoop);
-    }
-
-    if(statusReset > 0){
-      statusReset--;
-    }
-    if(statusReset === 0){
-      status.html('');
-    }
-  }
-
-  function animate() { //Animates notes in active array
-    raf = window.requestAnimationFrame(animate); //Animation Frame recursion
-
-    for(var i = 0; i < activeArray.length; i++){
-      var cn = activeArray[i];
-      cn.drawNote();
-      cn.y += cn.velocity;
-      if(cn.y > 400 && cn.y < 460){
-        cn.active = true;
-      }
-      if(cn.y >= 460 && cn.notHit){
-        cn.color = '#00b0b0';
-      }
-      if(cn.y >= 500){
-        if(cn.notHit){
-          score.html(parseInt(score.html(),10)-500);
-        }
-        activeArray.shift();
-        cty.clearRect(cn.x-5,480,100,20);
-      }
-    }
-  }
-
-  function pause(){ //Pause and unpause game
-    if(notPaused){
-      window.clearInterval(gameLoop);
-      pausedTime = Math.abs(startTime - new Date().getMilliseconds());
-      remainingTime = interval - pausedTime;
-      console.log("start: "+startTime+" paused: "+pausedTime+" remain: "+remainingTime);
-      window.cancelAnimationFrame(raf);
-      notPaused = false; //Game is now not notPaused, therefore paused
-      message('pause');
-      music.pause();
-      document.getElementById('bgvid').pause();
-    } else {
-      gameLoop = setTimeout(function(){
-        sunnyGardenSunday();
-        gameLoop = setInterval(sunnyGardenSunday,interval);
-      },remainingTime);
-
-      raf = window.requestAnimationFrame(animate);
-      notPaused = true;
-      message('');
-      music.play();
-      document.getElementById('bgvid').play();
     }
   }
 

@@ -67,6 +67,7 @@ $(document).ready(function(){
   function sunnyGardenSunday(){
     timeElapsed += interval;
     var diff = (Date.now() - startTime) - timeElapsed;
+    console.log(diff);
 
     gameLoop = window.setTimeout(sunnyGardenSunday, (interval - diff));
 
@@ -122,15 +123,15 @@ $(document).ready(function(){
     if(notPaused){
       window.clearTimeout(gameLoop);
       window.cancelAnimationFrame(raf);
-      remainingTime = timeElapsed - (Date.now() - startTime);
+      remainingTime = (Date.now() - startTime) - timeElapsed;
       notPaused = false; //Game is now not notPaused, therefore paused
       message('pause');
       music.pause();
       document.getElementById('bgvid').pause();
     } else {
       timeElapsed = 0;
-      startTime = Date.now();
-      gameLoop = setTimeout(sunnyGardenSunday, remainingTime);
+      startTime = Date.now() - remainingTime;
+      gameLoop = setTimeout(sunnyGardenSunday, interval - remainingTime);
 
       raf = window.requestAnimationFrame(animate);
       notPaused = true;
@@ -213,7 +214,7 @@ $(document).ready(function(){
         break;
       case 'pause':
         statusReset = 0;
-        status.css('color','cyan');
+        status.css('color','white');
         status.html('PAUSE');
         break;
       case 'perfect':

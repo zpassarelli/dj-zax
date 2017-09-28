@@ -67,7 +67,6 @@ $(document).ready(function(){
   function sunnyGardenSunday(){
     timeElapsed += interval;
     var diff = (Date.now() - startTime) - timeElapsed;
-    console.log(diff);
 
     gameLoop = window.setTimeout(sunnyGardenSunday, (interval - diff));
 

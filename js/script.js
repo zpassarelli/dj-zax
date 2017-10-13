@@ -29,6 +29,10 @@ $(document).ready(function(){
   var startTime; //Variables for timing
   var timeElapsed = 0;
   var pausedTime;
+  var fpsInterval = 60;
+  var then;
+  var now;
+  var elapsed;
 
   var noteArray = []; //Queues all notes that need to be animated
   var activeArray = []; //Holds all notes currently animating
@@ -56,6 +60,7 @@ $(document).ready(function(){
       inputReady = true; //Keyboard listener functions active
 
       startTime = Date.now();
+      then = Date.now();
 
       gameLoop = setTimeout(sunnyGardenSunday,interval);
 
@@ -98,22 +103,30 @@ $(document).ready(function(){
   function animate() { //Animates notes in active array
     raf = window.requestAnimationFrame(animate); //Animation Frame recursion
 
-    for(var i = 0; i < activeArray.length; i++){
-      var cn = activeArray[i];
-      cn.drawNote();
-      cn.y += cn.velocity;
-      if(cn.y > 400 && cn.y < 460){
-        cn.active = true;
-      }
-      if(cn.y >= 460 && cn.notHit){
-        cn.color = '#00b0b0';
-      }
-      if(cn.y >= 500){
-        if(cn.notHit){
-          score.html(parseInt(score.html(),10)-500);
+    now = Date.now();
+    elapsed = now - then;
+
+    if (elapsed > (1000 / fpsInterval)) {
+
+      then = now - (elapsed % (1000 / fpsInterval));
+
+      for(var i = 0; i < activeArray.length; i++){
+        var cn = activeArray[i];
+        cn.drawNote();
+        cn.y += cn.velocity;
+        if(cn.y > 400 && cn.y < 460){
+          cn.active = true;
         }
-        activeArray.shift();
-        cty.clearRect(cn.x-5,480,100,20);
+        if(cn.y >= 460 && cn.notHit){
+          cn.color = '#00b0b0';
+        }
+        if(cn.y >= 500){
+          if(cn.notHit){
+            score.html(parseInt(score.html(),10)-500);
+          }
+          activeArray.shift();
+          cty.clearRect(cn.x-5,480,100,20);
+        }
       }
     }
   }
@@ -132,7 +145,7 @@ $(document).ready(function(){
       startTime = Date.now() - remainingTime;
       gameLoop = setTimeout(sunnyGardenSunday, interval - remainingTime);
 
-      raf = window.requestAnimationFrame(animate);
+      animate(30);
       notPaused = true;
       message('');
       music.play();

@@ -145,7 +145,7 @@ $(document).ready(function(){
       startTime = Date.now() - remainingTime;
       gameLoop = setTimeout(sunnyGardenSunday, interval - remainingTime);
 
-      animate(30);
+      animate();
       notPaused = true;
       message('');
       music.play();
